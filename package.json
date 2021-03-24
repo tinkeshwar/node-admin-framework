@@ -1,7 +1,7 @@
 {
-  "name": "saga-admin",
+  "name": "node-admin",
   "version": "1.0.0",
-  "description": "Vidhyasaga admin support tool",
+  "description": "Framework for backend",
   "main": "dist/index.js",
   "scripts": {
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
@@ -22,7 +22,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://tinkeshwar@bitbucket.org/vidhyasaga/admin.git"
+    "url": "https://github.com/tinkeshwar/node-admin-framework.git"
   },
   "author": "Tinkeshwar Singh",
   "license": "ISC",
