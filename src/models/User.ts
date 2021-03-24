@@ -5,6 +5,7 @@ import sequelize from '../config/database';
 import {AutoDate, Column, Entity, Nullable, PrimaryKey, Unique} from '../utilities/SequelizeDecorator';
 import Permission from './Permission';
 import { uniq } from 'lodash';
+import { Image } from '.';
 
 @Entity('users',{sequelize, paranoid: true})
 class User extends Model {
@@ -136,6 +137,14 @@ User.belongsToMany(Role, {
 User.belongsToMany(Permission, {
     as: 'permissions', through: 'permission_user',
     foreignKey: 'user_id', otherKey: 'permission_id'
+});
+
+User.hasMany(Image, {
+    foreignKey: 'imageableId',
+    constraints: false,
+    scope: {
+      imageableType: 'user'
+    }
 });
 
 export default User;

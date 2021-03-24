@@ -12,7 +12,7 @@ class <%= h.inflection.classify(name) %> extends Model {
     @PrimaryKey()
     public id!: number;
 
-
+    @Nullable
     @Column(DataTypes.BOOLEAN)
     public status?: boolean;
 
