@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt';
-import {Association, BelongsToManyAddAssociationMixin, BelongsToManyCountAssociationsMixin, BelongsToManyCreateAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyRemoveAssociationMixin, BelongsToManySetAssociationsMixin, DataTypes, Model} from 'sequelize';
+import {Association, BelongsToManyAddAssociationMixin, BelongsToManyCountAssociationsMixin, BelongsToManyCreateAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyRemoveAssociationMixin, BelongsToManySetAssociationsMixin, DataTypes, HasManyAddAssociationMixin, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, Model} from 'sequelize';
 import Role from './Role';
 import sequelize from '../config/database';
 import {AutoDate, Column, Entity, Nullable, PrimaryKey, Unique} from '../utilities/SequelizeDecorator';
 import Permission from './Permission';
 import { uniq } from 'lodash';
-import { Image } from '.';
+import Image from './Image';
 
 @Entity('users',{sequelize, paranoid: true})
 class User extends Model {
@@ -93,6 +93,9 @@ class User extends Model {
     public createRole!: BelongsToManyCreateAssociationMixin<Role>;
     public removeRole!: BelongsToManyRemoveAssociationMixin<Role, number>;
 
+    public createImage!: HasManyCreateAssociationMixin<Image>;
+    public getImages!: HasManyGetAssociationsMixin<Image>;
+
     public async authenticate(password: string){
         const userPassword = this.get('password');
         if(!userPassword){
@@ -140,7 +143,8 @@ User.belongsToMany(Permission, {
 });
 
 User.hasMany(Image, {
-    foreignKey: 'imageableId',
+    as: 'images',
+    foreignKey: 'imageable_id',
     constraints: false,
     scope: {
       imageableType: 'user'

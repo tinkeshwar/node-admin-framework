@@ -1,5 +1,4 @@
 import {DataTypes, Model} from 'sequelize';
-import { User } from '.';
 import sequelize from '../config/database';
 import {AutoDate, Column, Entity, Nullable, PrimaryKey} from '../utilities/SequelizeDecorator';
 
@@ -43,7 +42,5 @@ class Image extends Model {
         return image;
     }
 }
-
-Image.belongsTo(User, { foreignKey: 'imageableId', constraints: false });
 
 export default Image;

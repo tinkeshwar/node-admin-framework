@@ -58,6 +58,7 @@ export default[
                     email: Joi.string().email().required().example('john@doe.com'),
                     phone: Joi.number().required().example('9876543210'),
                     password: Joi.string().required(),
+                    image: Joi.any().meta({ swaggerType: 'image' }).required().description('user image')
                 }
             },
             response: {

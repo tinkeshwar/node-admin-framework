@@ -11,7 +11,6 @@ module.exports = {
             imageableType:{type: DataTypes.STRING, allowNull: false, field:'imageable_type'},
             imageableId:{type: DataTypes.INTEGER, allowNull: false, field:'imageable_id'},
             status: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: 0},
-            deletedAt: {type: DataTypes.DATE, allowNull: true, field:'deleted_at'},
             createdAt: {type: DataTypes.DATE, allowNull: false, field:'created_at'},
             updatedAt: {type: DataTypes.DATE, allowNull: false, field:'updated_at'},
         });
