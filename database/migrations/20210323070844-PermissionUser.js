@@ -6,7 +6,7 @@ module.exports = {
       await QueryInterface.createTable('permission_user',{
           userId: {
               allowNull: false,
-              type: DataTypes.INTEGER,
+              type: DataTypes.BIGINT,
               field: 'permission_id',
               primaryKey: true,
               references: {
@@ -20,7 +20,7 @@ module.exports = {
           },
           roleId: {
               allowNull: false,
-              type: DataTypes.INTEGER,
+              type: DataTypes.BIGINT,
               field: 'user_id',
               primaryKey: true,
               references: {

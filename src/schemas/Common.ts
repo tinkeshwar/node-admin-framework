@@ -22,3 +22,24 @@ export const StatusChangeSchema = Joi.object({
     success: Joi.any().example('Success'),
     status: Joi.boolean().required().example(true)
 }).label('Unauthorized Error');
+
+export const FileUploadSchema = Joi.object({
+    file: Joi.string(),
+    ext: Joi.string()
+}).label('File Upload Success');
+
+export const CPUHealthSchema = Joi.object({
+    uptime:Joi.number(),
+    timestamp:Joi.number(),
+    cpu: Joi.object({
+        idle: Joi.number(),
+        total: Joi.number()
+    }),
+    usage: Joi.object({
+        cpu: Joi.number(),
+        memory: Joi.number(),
+        ctime: Joi.number(),
+        elapsed: Joi.number(),
+        timestamp: Joi.number()
+    })
+}).label('CPU Health State');

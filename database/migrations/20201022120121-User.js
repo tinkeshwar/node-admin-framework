@@ -4,10 +4,10 @@ module.exports = {
     up: async(QueryInterface, Sequelize) =>{
         const {DataTypes} = Sequelize;
         await QueryInterface.createTable('users',{
-            id: {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true},
+            id: {type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
             firstname: {type: DataTypes.STRING, allowNull: false},
             middlename: {type: DataTypes.STRING, allowNull: true},
-            lastname: {type: DataTypes.STRING, allowNull: false},
+            lastname: {type: DataTypes.STRING, allowNull: true},
             phone: {type: DataTypes.STRING, unique: true, allowNull: false},
             email: {type: DataTypes.STRING, unique: true, allowNull: false},
             password: {type: DataTypes.STRING, allowNull: false},

@@ -6,11 +6,32 @@ import * as env from './environment';
 import AuthService from '../services/auth/AuthService';
 import Joi from 'joi';
 import Redis from 'ioredis';
+import Boom from '@hapi/boom';
 // initialize configuration
 env.config();
 const {SERVER_PORT,SERVER_HOST,JWT_TOKEN} = process.env;
 
-export const server = new Hapi.Server({ host:SERVER_HOST,port:SERVER_PORT});
+export const server = new Hapi.Server({
+    host:SERVER_HOST,
+    port:SERVER_PORT,
+    routes: {
+        cors: {
+            origin: ['*'],
+            credentials: true,
+            headers: ['Accept', 'Content-Type','Authorization'],
+            additionalHeaders: ['X-localization']
+        },
+        validate: {
+            failAction: async (request, h, err) => {
+              if (process.env.NODE_ENV === 'production') {
+                throw Boom.badRequest(err.message);
+              } else {
+                throw Boom.badRequest(err.message);
+              }
+            }
+        }
+    }
+});
 
 let prepared = false;
 const redis = new Redis();
@@ -25,7 +46,7 @@ async function prepare(){
         validate: AuthService.verify,
         verifyOptions:{
             algorithms:['HS256']
-        }
+        },
     });
     server.validator(Joi);
     server.route(routes);

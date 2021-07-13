@@ -4,7 +4,7 @@ module.exports = {
     up: async(QueryInterface, Sequelize) =>{
         const {DataTypes} = Sequelize;
         await QueryInterface.createTable('permissions',{
-            id: {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true},
+            id: {type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
             name: {type: DataTypes.STRING,unique: true, allowNull: false},
             level: {type: DataTypes.STRING, allowNull: true},
             status: {type: DataTypes.BOOLEAN, allowNull: false, defaultValue: 0},

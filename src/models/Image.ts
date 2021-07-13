@@ -14,6 +14,9 @@ class Image extends Model {
     @Column(DataTypes.STRING)
     public path?: string;
 
+    @Column(DataTypes.STRING)
+    public publicUrl?: string;
+
     @Column(DataTypes.INTEGER)
     public imageableId?: number;
 
@@ -30,15 +33,8 @@ class Image extends Model {
     @AutoDate()
     public readonly updatedAt!: Date;
 
-    @Nullable
-    @Column(DataTypes.DATE)
-    public readonly deletedAt?: Date;
-
     public toJSON(): Record<string, any> {
         const image = this.get('', { plain: true }) as Record<string, any>;
-        if(!image.deletedAt){
-            delete image.deletedAt;
-        }
         return image;
     }
 }

@@ -20,5 +20,11 @@ const PermissionResponseList = Joi.object({
     }).unknown().label('List Meta')
 }).unknown().label('Permission List');
 
+const PermissionDropdownResponseList = Joi.object({
+    items: Joi.array().items(PermissionResponse).required().label('List Dropdown'),
+}).unknown().label('Permission Dropdown');
+
+
 export const PermissionListResponseSchema = PermissionResponseList;
 export const PermissionResponseSchema = PermissionResponse;
+export const PermissionDropdownListResponseSchema = PermissionDropdownResponseList;

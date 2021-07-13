@@ -1,16 +1,16 @@
 import axios from 'axios';
 
-const {SAGA_TOOL_API_HOST, SAGA_TOOL_API_AUTH_KEY} = process.env;
+const {API_HOST, API_AUTH_KEY} = process.env;
 
 class ApiRequest{
     protected instance: any;
 
     constructor(){
         this.instance = axios.create({
-            baseURL: SAGA_TOOL_API_HOST,
+            baseURL: API_HOST,
             timeout: 1000,
             headers: {
-                'apiKey': SAGA_TOOL_API_AUTH_KEY,
+                'apiKey': API_AUTH_KEY,
                 'Content-Type':'application/json',
                 'Accept':'application/json'
             }

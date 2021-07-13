@@ -1,14 +1,31 @@
 import bcrypt from 'bcrypt';
-import {Association, BelongsToManyAddAssociationMixin, BelongsToManyCountAssociationsMixin, BelongsToManyCreateAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyRemoveAssociationMixin, BelongsToManySetAssociationsMixin, DataTypes, HasManyAddAssociationMixin, HasManyCreateAssociationMixin, HasManyGetAssociationsMixin, Model} from 'sequelize';
+import {
+    Association,
+    BelongsToManyAddAssociationMixin,
+    BelongsToManyCountAssociationsMixin,
+    BelongsToManyCreateAssociationMixin,
+    BelongsToManyGetAssociationsMixin,
+    BelongsToManyHasAssociationMixin,
+    BelongsToManyRemoveAssociationMixin,
+    BelongsToManyRemoveAssociationsMixin,
+    BelongsToManySetAssociationsMixin,
+    DataTypes,
+    HasOneCreateAssociationMixin,
+    HasOneGetAssociationMixin,
+    Model
+} from 'sequelize';
 import Role from './Role';
 import sequelize from '../config/database';
 import {AutoDate, Column, Entity, Nullable, PrimaryKey, Unique} from '../utilities/SequelizeDecorator';
 import Permission from './Permission';
 import { uniq } from 'lodash';
 import Image from './Image';
+import UserSetting from './UserSetting';
+import PasswordRecovery from './PasswordRecovery';
 
 @Entity('users',{sequelize, paranoid: true})
 class User extends Model {
+
     public get scopes(): string[] {
         let permissionScopes: string[] = [];
         let roleScopes: string[][] = [];
@@ -19,7 +36,7 @@ class User extends Model {
         if (this.roles) {
             roleScopes = (this.roles).map((role) => role.scopes);
         }
-        
+
         return uniq(permissionScopes.concat(...roleScopes));
     }
 
@@ -38,6 +55,7 @@ class User extends Model {
     @Column(DataTypes.STRING)
     public middlename?: string;
 
+    @Nullable
     @Column(DataTypes.STRING)
     public lastname?: string;
 
@@ -79,11 +97,13 @@ class User extends Model {
     public readonly roles?: Role[];
 
     public getPermissions!: BelongsToManyGetAssociationsMixin<Permission>;
+    public setPermission!: BelongsToManyAddAssociationMixin<Permission, number>;
     public addPermission!: BelongsToManyAddAssociationMixin<Permission, number>;
     public hasPermission!: BelongsToManyHasAssociationMixin<Permission, number>;
     public countPermissions!: BelongsToManyCountAssociationsMixin;
     public createPermission!: BelongsToManyCreateAssociationMixin<Permission>;
     public removePermission!: BelongsToManyRemoveAssociationMixin<Permission, number>;
+    public removePermissions!: BelongsToManyRemoveAssociationsMixin<Permission, number>;
 
     public getRoles!: BelongsToManyGetAssociationsMixin<Role>;
     public setRoles!: BelongsToManySetAssociationsMixin<Role, number>;
@@ -92,9 +112,12 @@ class User extends Model {
     public countRoles!: BelongsToManyCountAssociationsMixin;
     public createRole!: BelongsToManyCreateAssociationMixin<Role>;
     public removeRole!: BelongsToManyRemoveAssociationMixin<Role, number>;
+    public removeRoles!: BelongsToManyRemoveAssociationsMixin<Role, number>;
 
-    public createImage!: HasManyCreateAssociationMixin<Image>;
-    public getImages!: HasManyGetAssociationsMixin<Image>;
+    public createImage!: HasOneCreateAssociationMixin<Image>;
+    public getImage!: HasOneGetAssociationMixin<Image>;
+
+    public addSetting!: HasOneCreateAssociationMixin<UserSetting>;
 
     public async authenticate(password: string){
         const userPassword = this.get('password');
@@ -142,14 +165,19 @@ User.belongsToMany(Permission, {
     foreignKey: 'user_id', otherKey: 'permission_id'
 });
 
-User.hasMany(Image, {
-    as: 'images',
+User.hasOne(Image, {
+    as: 'image',
     foreignKey: 'imageable_id',
     constraints: false,
     scope: {
       imageableType: 'user'
     }
 });
+
+User.hasMany(UserSetting);
+
+User.hasOne(PasswordRecovery);
+PasswordRecovery.belongsTo(User);
 
 export default User;
 

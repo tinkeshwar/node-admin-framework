@@ -5,19 +5,29 @@ import Vision from '@hapi/vision';
 import HapiSwagger from 'hapi-swagger';
 import HapiAuthJwt from 'hapi-auth-jwt2';
 import { compact } from 'lodash';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const {
+    NODE_ENV,
+    SERVER_SSL
+  } = process.env;
 
 export default compact([
     {
         plugin: HapiSwagger,
         options:{
+            schemes:[SERVER_SSL==='true'?'https':'http'],
             info: {
-                title: process.env.npm_package_name.toUpperCase(),
-                description: process.env.npm_package_description,
-                version: process.env.npm_package_version
+                title: process.env.npm_package_name !== undefined ? process.env.npm_package_name.toUpperCase():'NA',
+                description: process.env.npm_package_description !== undefined?process.env.npm_package_description:'NA',
+                version: process.env.npm_package_version !== undefined ?process.env.npm_package_version:'NA'
             },
-            grouping: 'tags',
             expanded: 'none',
-            basePath: '/',
+            basePath: '/api/',
+            pathPrefixSize: 3,
+            pathReplacements:[],
+            documentationPage: NODE_ENV === 'development',
             documentationPath: '/explorer',
             securityDefinitions: {
                 token:{

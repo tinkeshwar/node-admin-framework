@@ -26,7 +26,9 @@ export default[
                 options: {abortEarly: false},
                 query:{
                     page: Joi.number().min(1).default(1),
-                    records: Joi.number().min(1).default(10)
+                    records: Joi.number().min(1).default(10),
+                    sort: Joi.string().optional(),
+                    order: Joi.string().optional()
                 }
             },
             response: {

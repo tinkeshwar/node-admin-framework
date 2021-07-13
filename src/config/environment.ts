@@ -6,11 +6,11 @@ import logger from './logger';
 
 const requiredVars: string[] = [];
 
-dotenv.config();
+dotenv.config({ path:path.join(__dirname, '.env') });
 
 export const config = () =>{
     const readFileLine = readline.createInterface({
-        input: fs.createReadStream(path.join(__dirname,'../../env.example'))
+        input: fs.createReadStream(path.join(__dirname,'../../.env.example'))
     });
 
     readFileLine.on('line', (line)=>{

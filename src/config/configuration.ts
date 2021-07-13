@@ -13,13 +13,14 @@ interface IDBConfig {
   seederStorageTableName: string;
   pool?: any;
   dialectOptions?: any;
+  timezone: string;
 }
 
 const {
   DB_USER,
   DB_PASSWORD,
   DB_NAME,
-  DB_HOSTNAME,
+  DB_HOST,
 } = process.env;
 
 
@@ -27,8 +28,9 @@ const commonConfig: IDBConfig = {
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME || 'vidhyasaga_admin_dev',
-  host: DB_HOSTNAME || '127.0.0.1',
+  host: DB_HOST || '127.0.0.1',
   dialect: 'mysql',
+  timezone: '+05:30',
   migrationStorage: 'sequelize',
   migrationStorageTableName: 'sequelize_migrations',
   seederStorage: 'sequelize',

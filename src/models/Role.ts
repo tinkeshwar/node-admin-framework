@@ -1,9 +1,9 @@
-import {Association, BelongsToManyAddAssociationMixin, BelongsToManyCountAssociationsMixin, BelongsToManyCreateAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyRemoveAssociationMixin, DataTypes, Model} from 'sequelize';
+import {Association, BelongsToManyAddAssociationMixin, BelongsToManyCountAssociationsMixin, BelongsToManyCreateAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, DataTypes, Model} from 'sequelize';
 import { Permission } from '.';
 import sequelize from '../config/database';
 import {AutoDate, Column, Entity, Nullable, PrimaryKey, Unique} from '../utilities/SequelizeDecorator';
 
-@Entity('roles', { sequelize })
+@Entity('roles', { sequelize, paranoid: true })
 class Role extends Model {
 
     public get scopes(): string[] {
@@ -44,11 +44,13 @@ class Role extends Model {
     public readonly deletedAt?: Date;
 
     public getPermissions!: BelongsToManyGetAssociationsMixin<Permission>;
+    public setPermission!: BelongsToManyAddAssociationMixin<Permission, number>;
     public addPermission!: BelongsToManyAddAssociationMixin<Permission, number>;
     public hasPermission!: BelongsToManyHasAssociationMixin<Permission, number>;
     public countPermissions!: BelongsToManyCountAssociationsMixin;
     public createPermission!: BelongsToManyCreateAssociationMixin<Permission>;
     public removePermission!: BelongsToManyRemoveAssociationMixin<Permission, number>;
+    public removePermissions!: BelongsToManyRemoveAssociationsMixin<Permission, number>;
 
     public readonly permissions?: Permission[];
 

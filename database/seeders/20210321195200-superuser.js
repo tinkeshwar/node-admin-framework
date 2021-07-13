@@ -3,7 +3,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.bulkInsert('users', [{
-      email: 'admin@vidhyasaga.com',
+      email: 'tool@vidhyasaga.com',
       phone: '9876543210',
       password: '$2b$10$9kJptxqva8Yd6PWY9dTCYu9jTU6.sCbJ5XBYTzI0s.7HpSDtuD5tC', //admin
       firstname: 'Tinkeshwar',

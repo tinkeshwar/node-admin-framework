@@ -10,7 +10,7 @@ class SignInService{
         if(!user){
             throw new UserNotExistError('User Does Not Exist');
         }
-        
+
         if(!user.status){
             throw new UserNotActiveError('User Not Active');
         }

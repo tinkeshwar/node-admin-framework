@@ -2,7 +2,7 @@ import {DataTypes, Model} from 'sequelize';
 import sequelize from '../config/database';
 import {AutoDate, Column, Entity, Nullable, PrimaryKey, Unique} from '../utilities/SequelizeDecorator';
 
-@Entity('permissions', { sequelize })
+@Entity('permissions', { sequelize, paranoid: true })
 class Permission extends Model {
 
     @PrimaryKey()

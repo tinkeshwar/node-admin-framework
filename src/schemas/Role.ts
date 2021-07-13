@@ -6,7 +6,7 @@ const RoleResponse = Joi.object({
     id: Joi.number().required().example(1),
     name: Joi.string().required().example('Developer'),
     alias: Joi.string().required().example('developer'),
-    descrription: Joi.string().optional(),
+    description: Joi.string().optional(),
     status:Joi.boolean().default(false),
     created_at:Joi.date().optional().allow(null),
     updated_at:Joi.date().optional().allow(null)
@@ -21,5 +21,10 @@ const RoleResponseList = Joi.object({
     }).unknown().label('List Meta')
 }).unknown().label('Role List');
 
+const RoleDropdownResponseList = Joi.object({
+    items: Joi.array().items(RoleResponse).required().label('List Dropdown'),
+}).unknown().label('Role Dropdown');
+
 export const RoleListResponseSchema = RoleResponseList;
 export const RoleResponseSchema = RoleResponse;
+export const RoleDropdownListResponseSchema = RoleDropdownResponseList;

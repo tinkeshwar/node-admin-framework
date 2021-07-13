@@ -10,8 +10,8 @@ const <%= h.inflection.classify(name) %>Response = Joi.object({
     id: Joi.number().required().example(1),
     
     status:Joi.boolean().default(false),
-    created_at:Joi.date().optional().allow(date),
-    updated_at:Joi.date().optional().allow(date)
+    created_at:Joi.date().optional().allow(null).example(date),
+    updated_at:Joi.date().optional().allow(null).example(date)
 }).unknown().label('<%= h.inflection.classify(name) %>');
 
 const <%= h.inflection.classify(name) %>ResponseList = Joi.object({

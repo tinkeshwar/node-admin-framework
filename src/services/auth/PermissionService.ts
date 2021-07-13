@@ -1,15 +1,14 @@
 import { Permission, Role, User } from "../../models";
 
 class PermissionService{
-    
+
     static async getUserRoles(userId: number): Promise<string[]>{
         const scope: User = await User.findByPk(userId, {
             include:[
-                {model: Role, as: 'roles', where:{status: 1}, include: [{ model: Permission, as: 'permissions' }]},
-                {model: Permission, as: 'permissions', where:{status: 1}}
+                {model: Permission, as: 'permissions', where:{status: 1}, required: false},
+                {model: Role, as: 'roles', where:{status: 1},required:false, include: [{ model: Permission, as: 'permissions' }]}
             ]
         });
-        
         return scope ? scope.scopes: [];
     }
 }

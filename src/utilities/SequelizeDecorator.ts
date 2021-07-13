@@ -1,8 +1,9 @@
 
 import 'reflect-metadata';
 import {DataType, DataTypes,InitOptions,Model} from 'sequelize';
+import sequelize from 'sequelize';
 import snakeCaseKeys from 'snakecase-keys';
-import toSnakeCase from 'to-snake-case';
+// import toSnakeCase from 'to-snake-case';
 
 
 
@@ -41,9 +42,23 @@ export function  PrimaryKey(options:IColumnOption = {}) {
     );
 }
 
+export function  PrimaryUUID(options:IColumnOption = {}) {
+    return Column(
+        DataTypes.UUID,
+        {defaultValue: sequelize.UUIDV4, primaryKey: true, ...options}
+    );
+}
+
 export function AutoDate(options: IColumnOption = {}) {
     return Column(
-        DataTypes.DATE, 
+        DataTypes.DATE,
+        {allowNull: true, ...options}
+    );
+}
+
+export function AutoString(options: IColumnOption = {}) {
+    return Column(
+        DataTypes.STRING,
         {allowNull: true, ...options}
     );
 }
@@ -71,41 +86,43 @@ export function Unique(target: any, propertyKey: string) {
 }
 
 
-export function  Entity(tableName: string, options: IEntityOptions) {
-    return (target: ModelStatic)=>{
-        const attribute = Reflect.getMetadata(attributesMetadataField, target.prototype);
-        if(!attribute){
-            throw new Error(`Columns must be defined in the model before declaring it as an Entity`);
-        }
-        const initOptions = Object.assign({}, defaultEntityOptions, options);
-        delete initOptions.eventPrefix;
-        delete initOptions.eventModelId;
-        delete initOptions.eventId;
+export const Entity = (tableName: string, options: IEntityOptions) => (target: ModelStatic): void => {
+    const targetPrototype = target.prototype as Record<string, any> & { toJSON(): Record<string, any>; };
+    const attributes = Reflect.getMetadata(attributesMetadataField, targetPrototype);
 
-        if(initOptions.underscored){
-            const toJSON = target.prototype.toJSON || function(this: any){
-                return this.get('',{plain:true});
-            };
-            target.prototype.toJSON = function(){
-                return snakeCaseKeys(toJSON.apply(this));
-            };
-        }
-
-        target.init(attribute, {
-            tableName,
-            ...initOptions
-        });
-
-        /*if(options.eventPrefix && options.eventId){
-            target.afterCreate(async (record) => {
-
-            });
-            target.afterUpdate(async (record) => {
-
-            });
-            target.afterDestroy(async (record) => {
-
-            });
-        }*/
+    if (!attributes) {
+      throw new Error('Columns must be defined in the model before declaring it as an Entity');
     }
-}
+
+    const initOptions = Object.assign({}, defaultEntityOptions, options);
+    delete initOptions.eventPrefix;
+    delete initOptions.eventModelId;
+    delete initOptions.eventId;
+
+    if (initOptions.underscored) {
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      const toJSON = targetPrototype.toJSON || function(this: Model) {
+        return this.get('', { plain: true });
+      };
+      targetPrototype.toJSON = function() {
+        return snakeCaseKeys(toJSON.apply(this));
+      };
+    }
+
+    target.init(attributes, {
+      tableName,
+      ...initOptions
+    });
+
+    if (options.eventPrefix && options.eventId) {
+
+      const eventPrefix = options.eventPrefix;
+      const eventId = options.eventId;
+
+      target.afterCreate(async (record: Model) => {return});
+
+      target.afterUpdate(async (record: Model) => {return});
+
+      target.afterDestroy(async (record: Model) => {return});
+    }
+  };
