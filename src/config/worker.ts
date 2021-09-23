@@ -26,7 +26,6 @@ const onQueueActive = (queueName: string, job: Queue.Job<any>) => {
 
 const onQueueFailed = (queueName: string, job: Queue.Job<any>, err: Error) => {
   logger.info(`Failed processing ${queueName} job #${job.id}. Reason: ${err.message}`)
-  if (NODE_ENV === 'production') {}
 }
 
 const onQueueCompleted = (queueName: string, job: Queue.Job<any>) => {

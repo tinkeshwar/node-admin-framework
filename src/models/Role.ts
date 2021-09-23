@@ -1,4 +1,4 @@
-import { Association, BelongsToManyAddAssociationMixin, BelongsToManyCountAssociationsMixin, BelongsToManyCreateAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, DataTypes, HasOneCreateAssociationMixin, Model } from 'sequelize'
+import { Association, BelongsToManyAddAssociationMixin, BelongsToManyCountAssociationsMixin, BelongsToManyCreateAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, DataTypes, Model } from 'sequelize'
 import { Permission } from '.'
 import sequelize from '../config/database'
 import { AutoDate, Column, Entity, Nullable, PrimaryKey } from '../utilities/SequelizeDecorator'
@@ -50,8 +50,6 @@ class Role extends Model {
     public createPermission!: BelongsToManyCreateAssociationMixin<Permission>;
     public removePermission!: BelongsToManyRemoveAssociationMixin<Permission, number>;
     public removePermissions!: BelongsToManyRemoveAssociationsMixin<Permission, number>;
-
-    public createRoleSidebar!: HasOneCreateAssociationMixin<RoleSidebar>;
 
     public readonly permissions?: Permission[];
 

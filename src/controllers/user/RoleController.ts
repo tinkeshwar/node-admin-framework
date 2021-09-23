@@ -3,7 +3,7 @@ import Hapi from '@hapi/hapi'
 import Role from '../../models/Role'
 import MasterController from '../master/MasterController'
 import connector from '../../config/database'
-import { Permission, RoleSidebar } from '../../models'
+import { Permission } from '../../models'
 
 class RoleController extends MasterController<typeof Role> {
   constructor () {
@@ -18,11 +18,6 @@ class RoleController extends MasterController<typeof Role> {
         return Boom.conflict('Data already exist.')
       }
       const role = await Role.create(payload)
-      const sidebar = await RoleSidebar.findOne({ order: [['createdAt', 'DESC']] })
-      if (!sidebar) {
-        return Boom.badImplementation('Unable to create sidebar.')
-      }
-      await role.createRoleSidebar({ roleId: role.id, sidebar: sidebar.sidebar })
       return response.response((await role.reload()).toJSON())
     } catch (error: any) {
       return Boom.badData(error)

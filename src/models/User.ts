@@ -21,9 +21,7 @@ import Permission from './Permission'
 import { uniq } from 'lodash'
 import Image from './Image'
 import UserSetting from './UserSetting'
-import { StudentRegistration } from '.'
 import PasswordRecovery from './PasswordRecovery'
-import Transaction from './Transaction'
 
 @Entity('users', { sequelize, paranoid: true })
 class User extends Model {
@@ -180,14 +178,7 @@ User.hasOne(Image, {
 
 User.hasMany(UserSetting)
 
-StudentRegistration.belongsTo(User, {
-  as: 'registeredBy',
-  foreignKey: 'registered_by_id'
-})
-
 User.hasOne(PasswordRecovery)
 PasswordRecovery.belongsTo(User)
-User.hasMany(Transaction, { as: 'transactions', foreignKey: 'transaction_by' })
-Transaction.belongsTo(User, { as: 'user', foreignKey: 'transaction_by' })
 
 export default User
