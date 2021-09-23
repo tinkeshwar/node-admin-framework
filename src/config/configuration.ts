@@ -27,7 +27,7 @@ const {
 const commonConfig: IDBConfig = {
   username: DB_USER,
   password: DB_PASSWORD,
-  database: DB_NAME || 'vidhyasaga_admin_dev',
+  database: DB_NAME || 'admin_dev',
   host: DB_HOST || '127.0.0.1',
   dialect: 'mysql',
   timezone: '+05:30',
@@ -39,8 +39,8 @@ const commonConfig: IDBConfig = {
 };
 
 export const development = Object.assign({}, commonConfig, {
-  database: DB_NAME || 'vidhyasaga_admin_dev'
+  database: DB_NAME || 'admin_dev'
 }) as IDBConfig;
 export const production = Object.assign({}, commonConfig, {
-  database: DB_NAME || 'vidhyasaga_admin'
+  database: DB_NAME || 'admin'
 }) as IDBConfig;
