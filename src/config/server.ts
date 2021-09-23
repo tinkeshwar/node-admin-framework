@@ -1,72 +1,100 @@
-import Hapi from '@hapi/hapi';
-import documentor from './documentor';
-import routes from './route';
-import logger from './logger';
-import * as env from './environment';
-import AuthService from '../services/auth/AuthService';
-import Joi from 'joi';
-import Redis from 'ioredis';
-import Boom from '@hapi/boom';
+import Hapi from '@hapi/hapi'
+import Boom from '@hapi/boom'
+import * as env from './environment'
+import documentor from './documentor'
+import routes from './route'
+import logger from './logger'
+import AuthService from '../services/auth/AuthService'
+import Joi from 'joi'
+import Redis from 'ioredis'
 // initialize configuration
-env.config();
-const {SERVER_PORT,SERVER_HOST,JWT_TOKEN} = process.env;
+env.config()
+const { SERVER_PORT, SERVER_HOST, JWT_TOKEN, REDIS_URL } = process.env
 
-export const server = new Hapi.Server({
-    host:SERVER_HOST,
-    port:SERVER_PORT,
-    routes: {
-        cors: {
-            origin: ['*'],
-            credentials: true,
-            headers: ['Accept', 'Content-Type','Authorization'],
-            additionalHeaders: ['X-localization']
-        },
-        validate: {
-            failAction: async (request, h, err) => {
-              if (process.env.NODE_ENV === 'production') {
-                throw Boom.badRequest(err.message);
-              } else {
-                throw Boom.badRequest(err.message);
-              }
-            }
-        }
+const serverPoint = {
+  host: SERVER_HOST,
+  port: SERVER_PORT,
+  routes: {
+    cors: {
+      origin: ['*'],
+      credentials: true,
+      headers: ['Accept', 'Content-Type', 'Authorization'],
+      additionalHeaders: ['X-localization']
+    },
+    validate: {
+      failAction: async (err:any) => {
+        throw Boom.badRequest(err.message)
+      }
     }
-});
+  }
+} as any
 
-let prepared = false;
-const redis = new Redis();
+if (process.env.NODE_ENV === 'development') {
+  serverPoint.debug = { request: ['error'] }
+}
 
-async function prepare(){
-    if(prepared){
-        return;
+export const server = new Hapi.Server(serverPoint)
+
+let prepared = false
+const redis = new Redis(REDIS_URL)
+
+const prepare = async (): Promise<void> => {
+  if (prepared) {
+    return
+  }
+  server.ext('onPreResponse', (request) => {
+    const response = request.response as {
+      isBoom: boolean;
+      isServer: boolean;
+      error?: string;
+      message: string;
+      output: { payload: Record<string, any>; };
+      data: Record<string, any>;
     }
-    await server.register(documentor as any);
-    server.auth.strategy('token','jwt',{
-        key:JWT_TOKEN,
-        validate: AuthService.verify,
-        verifyOptions:{
-            algorithms:['HS256']
-        },
-    });
-    server.validator(Joi);
-    server.route(routes);
-    prepared = true;
-}
-export async function start() {
-    await prepare();
-    await server.start();
-    logger.info(`Redis is ${redis.status}`);
-    logger.info(`Server started on port: ${SERVER_PORT}`);
-    logger.info(`Explorer is available at: ${SERVER_HOST}:${SERVER_PORT}/explorer`);
-    return server;
+
+    if (response.isBoom && process.env.NODE_ENV === 'test') {
+      logger.error(response)
+    }
+
+    if (response.isBoom && response.output && response.output.payload) {
+      response.output.payload.status_code = response.output.payload.statusCode
+      delete response.output.payload.statusCode
+    }
+
+    if (response && response.isBoom && response.isServer) {
+      const error = response.error || response.message
+      if (!response.data || !response.data.skipLogs) {
+        server.log('error', error)
+      }
+    }
+
+    return response
+  })
+  await server.register(documentor as any)
+  server.auth.strategy('token', 'jwt', {
+    key: JWT_TOKEN,
+    validate: AuthService.verify
+  })
+  server.validator(Joi)
+  server.route(routes)
+  prepared = true
 }
 
-export async function init() {
-    await prepare();
-    await server.initialize();
-    return server;
+export const start = async (): Promise<Hapi.Server> => {
+  await prepare()
+  await server.start()
+  logger.info(`Redis is ${redis.status}`)
+  logger.info(`Server started on port: ${SERVER_PORT}`)
+  logger.info(`Explorer is available at: http://${SERVER_HOST}:${SERVER_PORT}/explorer`)
+  return server
 }
 
-export async function stop() {
-    await server.stop();
+export const init = async (): Promise<Hapi.Server> => {
+  await prepare()
+  await server.initialize()
+  return server
+}
+
+export const stop = async (): Promise<void> => {
+  await server.stop()
 }

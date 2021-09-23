@@ -1,3 +1,3 @@
 class UserInvalidCredentialError extends Error {}
 
-export default UserInvalidCredentialError;
+export default UserInvalidCredentialError

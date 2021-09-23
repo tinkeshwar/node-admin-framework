@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import dotenv from 'dotenv'
+dotenv.config()
 
 interface IDBConfig {
   username?: string;
@@ -21,8 +21,8 @@ const {
   DB_PASSWORD,
   DB_NAME,
   DB_HOST,
-} = process.env;
-
+  DB_TEST_NAME
+} = process.env
 
 const commonConfig: IDBConfig = {
   username: DB_USER,
@@ -34,13 +34,18 @@ const commonConfig: IDBConfig = {
   migrationStorage: 'sequelize',
   migrationStorageTableName: 'sequelize_migrations',
   seederStorage: 'sequelize',
-  seederStorageTableName: 'sequelize_seeders',
+  seederStorageTableName: 'sequelize_seeders'
 
-};
+}
 
 export const development = Object.assign({}, commonConfig, {
   database: DB_NAME || 'admin_dev'
-}) as IDBConfig;
+}) as IDBConfig
+
+export const test = Object.assign({}, commonConfig, {
+  database: DB_TEST_NAME || 'test'
+}) as IDBConfig
+
 export const production = Object.assign({}, commonConfig, {
   database: DB_NAME || 'admin'
-}) as IDBConfig;
+}) as IDBConfig

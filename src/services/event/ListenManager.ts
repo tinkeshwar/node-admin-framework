@@ -7,6 +7,6 @@ export interface IDispatchable {
     subscribe(dispatcher: IEventDispatcher): any;
 }
 
-const Listeners: IDispatchable[] = [];
+const Listeners: IDispatchable[] = []
 
-export default Listeners;
+export default Listeners

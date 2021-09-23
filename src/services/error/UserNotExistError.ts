@@ -1,3 +1,3 @@
 class UserNotExistError extends Error {}
 
-export default UserNotExistError;
+export default UserNotExistError

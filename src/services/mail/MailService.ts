@@ -1,44 +1,45 @@
-import mailgunFactory from 'mailgun-js';
-import qs from 'querystring';
-import logger from '../../config/logger';
-import IEnvelope from './envelopes/IEnvelope';
+import mailgunFactory from 'mailgun-js'
+import qs from 'querystring'
+import logger from '../../config/logger'
+import IEnvelope from './envelopes/IEnvelope'
 
 const {
   MAILGUN_API_KEY,
   MAILGUN_DOMAIN,
   MAILGUN_FROM,
   NODE_ENV
-} = process.env;
+} = process.env
 
 const mailgun = mailgunFactory({
   apiKey: MAILGUN_API_KEY as string,
   domain: MAILGUN_DOMAIN as string,
   testMode: (NODE_ENV === 'development'),
   testModeLogger: (options, payload) => {
-    logger.info(JSON.stringify(qs.parse(payload), null, 2));
+    logger.info(JSON.stringify(qs.parse(payload), null, 2))
+    logger.info(options)
   }
-});
+})
 
 class MailService {
-  public static async sendToEmail(email: string, envelope: IEnvelope): Promise<void> {
+  public static async sendToEmail (email: string, envelope: IEnvelope): Promise<void> {
     const data = {
       from: MAILGUN_FROM,
       to: email,
       subject: envelope.subject,
       text: envelope.text,
       inline: envelope.attachment,
-      html: envelope.html,
-    };
+      html: envelope.html
+    }
 
     await new Promise<void>((resolve, reject) => {
-      void mailgun.messages().send(data, (err) => {
+      mailgun.messages().send(data, (err) => {
         if (err) {
-          return reject(err);
+          return reject(err)
         }
-        return resolve();
-      });
-    });
+        return resolve()
+      })
+    })
   }
 }
 
-export default MailService;
+export default MailService

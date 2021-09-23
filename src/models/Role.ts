@@ -1,17 +1,17 @@
-import {Association, BelongsToManyAddAssociationMixin, BelongsToManyCountAssociationsMixin, BelongsToManyCreateAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, DataTypes, Model} from 'sequelize';
-import { Permission } from '.';
-import sequelize from '../config/database';
-import {AutoDate, Column, Entity, Nullable, PrimaryKey, Unique} from '../utilities/SequelizeDecorator';
+import { Association, BelongsToManyAddAssociationMixin, BelongsToManyCountAssociationsMixin, BelongsToManyCreateAssociationMixin, BelongsToManyGetAssociationsMixin, BelongsToManyHasAssociationMixin, BelongsToManyRemoveAssociationMixin, BelongsToManyRemoveAssociationsMixin, DataTypes, HasOneCreateAssociationMixin, Model } from 'sequelize'
+import { Permission } from '.'
+import sequelize from '../config/database'
+import { AutoDate, Column, Entity, Nullable, PrimaryKey } from '../utilities/SequelizeDecorator'
+import RoleSidebar from './RoleSidebar'
 
 @Entity('roles', { sequelize, paranoid: true })
 class Role extends Model {
-
-    public get scopes(): string[] {
-        if (!this.permissions) {
-            return [];
-        }
-        return (this.permissions).map((permission) => permission.name);
+  public get scopes (): string[] {
+    if (!this.permissions) {
+      return []
     }
+    return (this.permissions).map((permission:any) => (permission.name !== undefined) ? permission.name : '')
+  }
 
     public static associations: {
         permissions: Association<Role, Permission>;
@@ -52,20 +52,27 @@ class Role extends Model {
     public removePermission!: BelongsToManyRemoveAssociationMixin<Permission, number>;
     public removePermissions!: BelongsToManyRemoveAssociationsMixin<Permission, number>;
 
+    public createRoleSidebar!: HasOneCreateAssociationMixin<RoleSidebar>;
+
     public readonly permissions?: Permission[];
 
-    public toJSON(): Record<string, any> {
-        const role = this.get('', { plain: true }) as Record<string, any>;
-        if(!role.deletedAt){
-            delete role.deletedAt;
-        }
-        return role;
+    public toJSON (): Record<string, any> {
+      const role = this.get('', { plain: true }) as Record<string, any>
+      if (!role.deletedAt) {
+        delete role.deletedAt
+      }
+      return role
     }
 }
 
 Role.belongsToMany(Permission, {
-    as: 'permissions', through: 'permission_role',
-    foreignKey: 'role_id', otherKey: 'permission_id'
-});
+  as: 'permissions',
+  through: 'permission_role',
+  foreignKey: 'role_id',
+  otherKey: 'permission_id'
+})
 
-export default Role;
+Role.hasOne(RoleSidebar, { as: 'roleSidebar', foreignKey: 'role_id' })
+RoleSidebar.belongsTo(Role, { as: 'role' })
+
+export default Role

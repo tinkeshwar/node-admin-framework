@@ -1,8 +1,8 @@
-import Listeners, { IDispatchable } from "./ListenManager";
+import Listeners, { IDispatchable } from './ListenManager'
 
 const Dispatchable = <T extends IDispatchable>(target: T): T => {
-    Listeners.push(target);
-    return target;
-};
+  Listeners.push(target)
+  return target
+}
 
-export default Dispatchable;
+export default Dispatchable

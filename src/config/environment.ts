@@ -1,40 +1,40 @@
-import fs from 'fs';
-import path from 'path';
-import readline from 'readline';
-import dotenv from 'dotenv';
-import logger from './logger';
+import fs from 'fs'
+import path from 'path'
+import readline from 'readline'
+import dotenv from 'dotenv'
+import logger from './logger'
 
-const requiredVars: string[] = [];
+const requiredVars: string[] = []
 
-dotenv.config({ path:path.join(__dirname, '.env') });
+dotenv.config({ path: path.join(__dirname, '.env') })
 
-export const config = () =>{
-    const readFileLine = readline.createInterface({
-        input: fs.createReadStream(path.join(__dirname,'../../.env.example'))
-    });
+export const config = () => {
+  const readFileLine = readline.createInterface({
+    input: fs.createReadStream(path.join(__dirname, '../../.env.example'))
+  })
 
-    readFileLine.on('line', (line)=>{
-        if(!line){
-            return;
-        }
+  readFileLine.on('line', (line) => {
+    if (!line) {
+      return
+    }
 
-        if(line.charAt(0) === '#'){
-            return
-        }
+    if (line.charAt(0) === '#') {
+      return
+    }
 
-        const variableName = line.split('=')[0];
+    const variableName = line.split('=')[0]
 
-        if(!variableName){
-            return;
-        }
-        requiredVars.push(variableName);
-    });
+    if (!variableName) {
+      return
+    }
+    requiredVars.push(variableName)
+  })
 
-    readFileLine.on('close', ()=>{
-        for(const variable of requiredVars){
-            if(!process.env[variable]){
-                logger.error(`Variable ${variable} is empty.`)
-            }
-        }
-    });
+  readFileLine.on('close', () => {
+    for (const variable of requiredVars) {
+      if (!process.env[variable]) {
+        logger.error(`Variable ${variable} is empty.`)
+      }
+    }
+  })
 }

@@ -13,12 +13,10 @@ entities.push({ name: '<%= h.inflection.underscore(h.inflection.pluralize(name))
 
 module.exports = {
   up: (queryInterface) => {
-
     return queryInterface.bulkInsert('permissions', entities);
   },
 
   down: (queryInterface, Sequelize) => {
-
     return queryInterface.bulkDelete('permissions', {
       name: { [Sequelize.Op.in]: entities.map(entity => entity.name) }
     }, {});

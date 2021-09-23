@@ -2,7 +2,7 @@
 to: database/migrations/<%= h.timestamp() %>-<%= h.inflection.classify(name) %>.js
 ---
 
-'use strict';
+'use strict'
 
 
 module.exports = {

@@ -1,3 +1,3 @@
 class InvalidPasswordRecoveryVerificationCodeError extends Error {}
 
-export default InvalidPasswordRecoveryVerificationCodeError;
+export default InvalidPasswordRecoveryVerificationCodeError

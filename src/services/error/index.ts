@@ -4,10 +4,19 @@
  * Module for authentication and authorization.
  * Covers registration, login, session maintenance, access control and other related aspects.
  */
- export { default as UserNotActiveError } from './UserNotActiveError';
- export { default as UserNotExistError } from './UserNotExistError';
- export { default as UserInvalidCredentialError } from './UserInvalidCredentialError';
- export { default as PasswordRecoveryDoesNotExistError } from './PasswordRecoveryDoesNotExistError';
- export { default as PasswordRecoveryExpiredError } from './PasswordRecoveryExpiredError';
- export { default as UserSettingsNotDefined } from './UserSettingsNotDefined';
- export { default as UserSettingsNotExist } from './UserSettingsNotExist';
+export { default as UserNotActiveError } from './UserNotActiveError'
+export { default as UserNotExistError } from './UserNotExistError'
+export { default as UserInvalidCredentialError } from './UserInvalidCredentialError'
+export { default as NoFeeFoundError } from './NoFeeFoundError'
+export { default as PasswordRecoveryDoesNotExistError } from './PasswordRecoveryDoesNotExistError'
+export { default as PasswordRecoveryExpiredError } from './PasswordRecoveryExpiredError'
+export { default as UserSettingsNotDefined } from './UserSettingsNotDefined'
+export { default as UserSettingsNotExist } from './UserSettingsNotExist'
+export { default as InvalidFeeMonthError } from './InvalidFeeMonthError'
+export { default as AdmissionError } from './AdmissionError'
+export { default as InvalidJWTError } from './InvalidJWTError'
+export { default as InvalidTokenTypeError } from './InvalidTokenTypeError'
+export { default as UploadFailError } from './UploadFailError'
+export { default as FileNotFoundError } from './FileNotFoundError'
+export { default as FileAlreadyExistsError } from './FileAlreadyExistsError'
+export { default as UserEmailMissingError } from './UserNotExistError'

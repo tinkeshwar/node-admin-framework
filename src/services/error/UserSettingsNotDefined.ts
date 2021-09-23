@@ -1,3 +1,3 @@
-class UserSettingsNotDefined extends Error{}
+class UserSettingsNotDefined extends Error {}
 
-export default UserSettingsNotDefined;
+export default UserSettingsNotDefined

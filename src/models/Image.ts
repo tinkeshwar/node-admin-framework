@@ -1,10 +1,9 @@
-import {DataTypes, Model} from 'sequelize';
-import sequelize from '../config/database';
-import {AutoDate, Column, Entity, Nullable, PrimaryKey} from '../utilities/SequelizeDecorator';
+import { DataTypes, Model } from 'sequelize'
+import sequelize from '../config/database'
+import { AutoDate, Column, Entity, Nullable, PrimaryKey } from '../utilities/SequelizeDecorator'
 
 @Entity('images', { sequelize })
 class Image extends Model {
-
     @PrimaryKey()
     public id!: number;
 
@@ -33,10 +32,10 @@ class Image extends Model {
     @AutoDate()
     public readonly updatedAt!: Date;
 
-    public toJSON(): Record<string, any> {
-        const image = this.get('', { plain: true }) as Record<string, any>;
-        return image;
+    public toJSON (): Record<string, any> {
+      const image = this.get('', { plain: true }) as Record<string, any>
+      return image
     }
 }
 
-export default Image;
+export default Image

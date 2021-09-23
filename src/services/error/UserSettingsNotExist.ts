@@ -1,3 +1,3 @@
-class UserSettingsNotExist extends Error{}
+class UserSettingsNotExist extends Error {}
 
-export default UserSettingsNotExist;
+export default UserSettingsNotExist

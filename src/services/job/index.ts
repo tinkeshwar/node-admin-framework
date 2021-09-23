@@ -10,7 +10,7 @@
  * job implementations may be isolated into their corresponding domain modules
  */
 
-export { default as JobManager } from './JobManager';
-export { default as JobProcessor } from './JobProcessor';
+export { default as JobManager } from './JobManager'
+export { default as JobProcessor } from './JobProcessor'
 
-export { default as RecoveryEmailDeliveryJob } from './jobs/RecoveryEmailDeliveryJob';
+export { default as RecoveryEmailDeliveryJob } from './jobs/RecoveryEmailDeliveryJob'

@@ -1,184 +1,193 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt'
 import {
-    Association,
-    BelongsToManyAddAssociationMixin,
-    BelongsToManyCountAssociationsMixin,
-    BelongsToManyCreateAssociationMixin,
-    BelongsToManyGetAssociationsMixin,
-    BelongsToManyHasAssociationMixin,
-    BelongsToManyRemoveAssociationMixin,
-    BelongsToManyRemoveAssociationsMixin,
-    BelongsToManySetAssociationsMixin,
-    DataTypes,
-    HasOneCreateAssociationMixin,
-    HasOneGetAssociationMixin,
-    Model
-} from 'sequelize';
-import Role from './Role';
-import sequelize from '../config/database';
-import {AutoDate, Column, Entity, Nullable, PrimaryKey, Unique} from '../utilities/SequelizeDecorator';
-import Permission from './Permission';
-import { uniq } from 'lodash';
-import Image from './Image';
-import UserSetting from './UserSetting';
-import PasswordRecovery from './PasswordRecovery';
+  Association,
+  BelongsToManyAddAssociationMixin,
+  BelongsToManyCountAssociationsMixin,
+  BelongsToManyCreateAssociationMixin,
+  BelongsToManyGetAssociationsMixin,
+  BelongsToManyHasAssociationMixin,
+  BelongsToManyRemoveAssociationMixin,
+  BelongsToManyRemoveAssociationsMixin,
+  BelongsToManySetAssociationsMixin,
+  DataTypes,
+  HasOneCreateAssociationMixin,
+  HasOneGetAssociationMixin,
+  Model
+} from 'sequelize'
+import Role from './Role'
+import sequelize from '../config/database'
+import { AutoDate, Column, Entity, Nullable, PrimaryKey, Unique } from '../utilities/SequelizeDecorator'
+import Permission from './Permission'
+import { uniq } from 'lodash'
+import Image from './Image'
+import UserSetting from './UserSetting'
+import { StudentRegistration } from '.'
+import PasswordRecovery from './PasswordRecovery'
+import Transaction from './Transaction'
 
-@Entity('users',{sequelize, paranoid: true})
+@Entity('users', { sequelize, paranoid: true })
 class User extends Model {
+  public get scopes (): string[] {
+    let permissionScopes: string[] = []
+    let roleScopes: string[][] = []
 
-    public get scopes(): string[] {
-        let permissionScopes: string[] = [];
-        let roleScopes: string[][] = [];
-
-        if (this.permissions) {
-            permissionScopes = (this.permissions).map((permission) => permission.name);
-        }
-        if (this.roles) {
-            roleScopes = (this.roles).map((role) => role.scopes);
-        }
-
-        return uniq(permissionScopes.concat(...roleScopes));
+    if (this.permissions) {
+      permissionScopes = (this.permissions).map((permission:any) => (permission.name !== undefined) ? permission.name : '')
+    }
+    if (this.roles) {
+      roleScopes = (this.roles).map((role) => role.scopes)
     }
 
-    public static associations: {
-        permissions: Association<User, Permission>;
-        roles: Association<User, Role>;
-    };
+    return uniq(permissionScopes.concat(...roleScopes))
+  }
 
-    @PrimaryKey()
-    public id!: number;
+  public static associations: {
+      permissions: Association<User, Permission>;
+      roles: Association<User, Role>;
+  };
 
-    @Column(DataTypes.STRING)
-    public firstname?: string;
+  @PrimaryKey()
+  public id!: number;
 
-    @Nullable
-    @Column(DataTypes.STRING)
-    public middlename?: string;
+  @Column(DataTypes.STRING)
+  public firstname?: string;
 
-    @Nullable
-    @Column(DataTypes.STRING)
-    public lastname?: string;
+  @Nullable
+  @Column(DataTypes.STRING)
+  public middlename?: string;
 
-    @Unique
-    @Column(DataTypes.STRING)
-    public phone?: string;
+  @Nullable
+  @Column(DataTypes.STRING)
+  public lastname?: string;
 
-    @Unique
-    @Column(DataTypes.STRING)
-    public email?: string;
+  @Unique
+  @Column(DataTypes.STRING)
+  public phone?: string;
 
-    @Nullable
-    @Column(DataTypes.STRING)
-    public password?: string;
+  @Unique
+  @Column(DataTypes.STRING)
+  public email?: string;
 
-    @Nullable
-    @Column(DataTypes.DATE)
-    public emailVerifiedAt?: Date;
+  @Nullable
+  @Column(DataTypes.STRING)
+  public password?: string;
 
-    @Nullable
-    @Column(DataTypes.DATE)
-    public phoneVerifiedAt?: Date;
+  @Nullable
+  @Column(DataTypes.DATE)
+  public emailVerifiedAt?: Date;
 
-    @Nullable
-    @Column(DataTypes.BOOLEAN)
-    public status?: boolean;
+  @Nullable
+  @Column(DataTypes.DATE)
+  public phoneVerifiedAt?: Date;
 
-    @AutoDate()
-    public readonly createdAt!: Date;
+  @Nullable
+  @Column(DataTypes.BOOLEAN)
+  public status?: boolean;
 
-    @AutoDate()
-    public readonly updatedAt!: Date;
+  @AutoDate()
+  public readonly createdAt!: Date;
 
-    @Nullable
-    @Column(DataTypes.DATE)
-    public readonly deletedAt?: Date;
+  @AutoDate()
+  public readonly updatedAt!: Date;
 
-    public readonly permissions?: Permission[];
-    public readonly roles?: Role[];
+  @Nullable
+  @Column(DataTypes.DATE)
+  public readonly deletedAt?: Date;
 
-    public getPermissions!: BelongsToManyGetAssociationsMixin<Permission>;
-    public setPermission!: BelongsToManyAddAssociationMixin<Permission, number>;
-    public addPermission!: BelongsToManyAddAssociationMixin<Permission, number>;
-    public hasPermission!: BelongsToManyHasAssociationMixin<Permission, number>;
-    public countPermissions!: BelongsToManyCountAssociationsMixin;
-    public createPermission!: BelongsToManyCreateAssociationMixin<Permission>;
-    public removePermission!: BelongsToManyRemoveAssociationMixin<Permission, number>;
-    public removePermissions!: BelongsToManyRemoveAssociationsMixin<Permission, number>;
+  public readonly permissions?: Permission[];
+  public readonly roles?: Role[];
 
-    public getRoles!: BelongsToManyGetAssociationsMixin<Role>;
-    public setRoles!: BelongsToManySetAssociationsMixin<Role, number>;
-    public addRole!: BelongsToManyAddAssociationMixin<Role, number>;
-    public hasRole!: BelongsToManyHasAssociationMixin<Role, number>;
-    public countRoles!: BelongsToManyCountAssociationsMixin;
-    public createRole!: BelongsToManyCreateAssociationMixin<Role>;
-    public removeRole!: BelongsToManyRemoveAssociationMixin<Role, number>;
-    public removeRoles!: BelongsToManyRemoveAssociationsMixin<Role, number>;
+  public getPermissions!: BelongsToManyGetAssociationsMixin<Permission>;
+  public setPermission!: BelongsToManyAddAssociationMixin<Permission, number>;
+  public addPermission!: BelongsToManyAddAssociationMixin<Permission, number>;
+  public hasPermission!: BelongsToManyHasAssociationMixin<Permission, number>;
+  public countPermissions!: BelongsToManyCountAssociationsMixin;
+  public createPermission!: BelongsToManyCreateAssociationMixin<Permission>;
+  public removePermission!: BelongsToManyRemoveAssociationMixin<Permission, number>;
+  public removePermissions!: BelongsToManyRemoveAssociationsMixin<Permission, number>;
 
-    public createImage!: HasOneCreateAssociationMixin<Image>;
-    public getImage!: HasOneGetAssociationMixin<Image>;
+  public getRoles!: BelongsToManyGetAssociationsMixin<Role>;
+  public setRoles!: BelongsToManySetAssociationsMixin<Role, number>;
+  public addRole!: BelongsToManyAddAssociationMixin<Role, number>;
+  public hasRole!: BelongsToManyHasAssociationMixin<Role, number>;
+  public countRoles!: BelongsToManyCountAssociationsMixin;
+  public createRole!: BelongsToManyCreateAssociationMixin<Role>;
+  public removeRole!: BelongsToManyRemoveAssociationMixin<Role, number>;
+  public removeRoles!: BelongsToManyRemoveAssociationsMixin<Role, number>;
 
-    public addSetting!: HasOneCreateAssociationMixin<UserSetting>;
+  public createImage!: HasOneCreateAssociationMixin<Image>;
+  public getImage!: HasOneGetAssociationMixin<Image>;
 
-    public async authenticate(password: string){
-        const userPassword = this.get('password');
-        if(!userPassword){
-            return false;
-        }
+  public addSetting!: HasOneCreateAssociationMixin<UserSetting>;
 
-        const validPassword = await bcrypt.compare(password, userPassword as string);
-        if(!validPassword){
-            return false;
-        }
-
-        return true;
+  public async authenticate (password: string) {
+    const userPassword = this.get('password')
+    if (!userPassword) {
+      return false
     }
 
-    public toJSON(): Record<string, any> {
-        const user = this.get('', { plain: true }) as Record<string, any>;
-        delete user.password;
-        if(!user.deletedAt){
-            delete user.deletedAt;
-        }
-        return user;
+    const validPassword = await bcrypt.compare(password, userPassword as string)
+    if (!validPassword) {
+      return false
     }
+
+    return true
+  }
+
+  public toJSON (): Record<string, any> {
+    const user = this.get('', { plain: true }) as Record<string, any>
+    delete user.password
+    if (!user.deletedAt) {
+      delete user.deletedAt
+    }
+    return user
+  }
 }
 
-
-const hashPassword = async(user: User)=>{
-    if(!user.changed('password')){
-        return;
-    }
-    const hash = await bcrypt.hash(user.get('password'),10);
-    user.set('password', hash);
+const hashPassword = async (user: User) => {
+  if (!user.changed('password')) {
+    return
+  }
+  const hash = await bcrypt.hash(user.get('password'), 10)
+  user.set('password', hash)
 }
 
-User.beforeCreate(hashPassword);
-User.beforeUpdate(hashPassword);
+User.beforeCreate(hashPassword)
+User.beforeUpdate(hashPassword)
 
 User.belongsToMany(Role, {
-    as: 'roles', through: 'role_user',
-    foreignKey: 'user_id', otherKey: 'role_id'
-});
+  as: 'roles',
+  through: 'role_user',
+  foreignKey: 'user_id',
+  otherKey: 'role_id'
+})
 
 User.belongsToMany(Permission, {
-    as: 'permissions', through: 'permission_user',
-    foreignKey: 'user_id', otherKey: 'permission_id'
-});
+  as: 'permissions',
+  through: 'permission_user',
+  foreignKey: 'user_id',
+  otherKey: 'permission_id'
+})
 
 User.hasOne(Image, {
-    as: 'image',
-    foreignKey: 'imageable_id',
-    constraints: false,
-    scope: {
-      imageableType: 'user'
-    }
-});
+  as: 'image',
+  foreignKey: 'imageable_id',
+  constraints: false,
+  scope: {
+    imageableType: 'user'
+  }
+})
 
-User.hasMany(UserSetting);
+User.hasMany(UserSetting)
 
-User.hasOne(PasswordRecovery);
-PasswordRecovery.belongsTo(User);
+StudentRegistration.belongsTo(User, {
+  as: 'registeredBy',
+  foreignKey: 'registered_by_id'
+})
 
-export default User;
+User.hasOne(PasswordRecovery)
+PasswordRecovery.belongsTo(User)
+User.hasMany(Transaction, { as: 'transactions', foreignKey: 'transaction_by' })
+Transaction.belongsTo(User, { as: 'user', foreignKey: 'transaction_by' })
 
-
+export default User

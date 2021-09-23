@@ -1,3 +1,3 @@
 class PasswordRecoveryDoesNotExistError extends Error {}
 
-export default PasswordRecoveryDoesNotExistError;
+export default PasswordRecoveryDoesNotExistError

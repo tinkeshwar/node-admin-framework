@@ -1,13 +1,12 @@
-import cryptoRandomString from 'crypto-random-string';
-import {Association, BelongsToGetAssociationMixin, DataTypes, Model} from 'sequelize';
-import { User } from '.';
-import sequelize from '../config/database';
-import moment from 'moment';
-import {AutoDate, AutoString, Column, Entity, Nullable, PrimaryKey, Unique} from '../utilities/SequelizeDecorator';
+import cryptoRandomString from 'crypto-random-string'
+import { Association, BelongsToGetAssociationMixin, DataTypes, Model } from 'sequelize'
+import { User } from '.'
+import sequelize from '../config/database'
+import moment from 'moment'
+import { AutoDate, AutoString, Column, Entity, ForeignKey, Nullable, PrimaryKey, Unique } from '../utilities/SequelizeDecorator'
 
 @Entity('password_recoveries', { sequelize })
 class PasswordRecovery extends Model {
-
     public static associations: {
         user: Association<PasswordRecovery, User>;
     };
@@ -15,7 +14,7 @@ class PasswordRecovery extends Model {
     @PrimaryKey()
     public id!: number;
 
-    @PrimaryKey({ autoIncrement: false })
+    @ForeignKey()
     public userId!: number;
 
     @Unique
@@ -48,19 +47,19 @@ class PasswordRecovery extends Model {
     public getUser!: BelongsToGetAssociationMixin<User>;
     public readonly user?: User[];
 
-    public get isExpired(): boolean {
-        if (!this.get('expiresAt')) {
-            return false;
-        }
-        if (moment() > moment(this.get('expiresAt'))) {
-            return true;
-        }
-        return false;
+    public get isExpired (): boolean {
+      if (!this.get('expiresAt')) {
+        return false
+      }
+      if (moment() > moment(this.get('expiresAt'))) {
+        return true
+      }
+      return false
     }
 }
 
-export default PasswordRecovery;
+export default PasswordRecovery
 
-function generateRandomCode(length: number): any {
-    return cryptoRandomString({ length, type: 'alphanumeric' }).toUpperCase();
+function generateRandomCode (length: number): any {
+  return cryptoRandomString({ length, type: 'alphanumeric' }).toUpperCase()
 }
