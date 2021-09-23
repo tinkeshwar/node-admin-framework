@@ -11,8 +11,8 @@ const {
 } = process.env
 
 const mailgun = mailgunFactory({
-  apiKey: MAILGUN_API_KEY as string,
-  domain: MAILGUN_DOMAIN as string,
+  apiKey: MAILGUN_API_KEY as string || 'na',
+  domain: MAILGUN_DOMAIN as string || 'na',
   testMode: (NODE_ENV === 'development'),
   testModeLogger: (options, payload) => {
     logger.info(JSON.stringify(qs.parse(payload), null, 2))
@@ -23,7 +23,7 @@ const mailgun = mailgunFactory({
 class MailService {
   public static async sendToEmail (email: string, envelope: IEnvelope): Promise<void> {
     const data = {
-      from: MAILGUN_FROM,
+      from: MAILGUN_FROM || 'na',
       to: email,
       subject: envelope.subject,
       text: envelope.text,
