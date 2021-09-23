@@ -2,7 +2,6 @@ import Hapi from '@hapi/hapi'
 import { User } from '../../models'
 import { UserInvalidCredentialError, UserNotExistError } from '../error'
 import PasswordChangeEmailDeliveryJob from '../job/jobs/PasswordChangeEmailDeliveryJob'
-import SidebarService from './SidebarService'
 
 class ProfileService {
   public static async profile (request: Hapi.Request) {
@@ -13,10 +12,6 @@ class ProfileService {
     })
     if (dbUser !== undefined && dbUser !== null) {
       request.auth.credentials.user = dbUser
-    }
-    const sidebar = await SidebarService.getUserSidebar(user.id)
-    if (sidebar) {
-      request.auth.credentials.sidebar = sidebar
     }
     if (request.auth.credentials.scope !== undefined) {
       delete request.auth.credentials.scope

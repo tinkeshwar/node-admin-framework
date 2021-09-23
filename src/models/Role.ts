@@ -2,7 +2,6 @@ import { Association, BelongsToManyAddAssociationMixin, BelongsToManyCountAssoci
 import { Permission } from '.'
 import sequelize from '../config/database'
 import { AutoDate, Column, Entity, Nullable, PrimaryKey } from '../utilities/SequelizeDecorator'
-import RoleSidebar from './RoleSidebar'
 
 @Entity('roles', { sequelize, paranoid: true })
 class Role extends Model {
@@ -71,8 +70,5 @@ Role.belongsToMany(Permission, {
   foreignKey: 'role_id',
   otherKey: 'permission_id'
 })
-
-Role.hasOne(RoleSidebar, { as: 'roleSidebar', foreignKey: 'role_id' })
-RoleSidebar.belongsTo(Role, { as: 'role' })
 
 export default Role
