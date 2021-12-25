@@ -1,29 +1,17 @@
 import Joi from 'joi'
+import SchemaBuilder from './SchemaBuilder'
 
-const date = new Date()
-
-const PermissionResponse = Joi.object({
-  id: Joi.number().required().example(1),
+const { item, items, list } = SchemaBuilder(Joi.object({
   name: Joi.string().required().example('models.method'),
+  description: Joi.string().optional().allow(null),
   level: Joi.string().optional().example('low'),
-  status: Joi.boolean().default(false),
-  created_at: Joi.date().optional().allow(null).example(date),
-  updated_at: Joi.date().optional().allow(null).example(date)
-}).unknown().label('Permission')
+  status: Joi.boolean().default(false)
+}), {
+  itemLabel: 'Permission Response',
+  listLabel: 'Permission List Response',
+  dropdownLabel: 'Permission Dropdown List Response'
+})
 
-const PermissionResponseList = Joi.object({
-  list: Joi.array().items(PermissionResponse).required().label('List Data'),
-  meta: Joi.object({
-    total: Joi.number().required().example(0),
-    page: Joi.number().required().example(1),
-    per_page: Joi.number().required().example(1)
-  }).unknown().label('List Meta')
-}).unknown().label('Permission List')
-
-const PermissionDropdownResponseList = Joi.object({
-  items: Joi.array().items(PermissionResponse).required().label('List Dropdown')
-}).unknown().label('Permission Dropdown')
-
-export const PermissionListResponseSchema = PermissionResponseList
-export const PermissionResponseSchema = PermissionResponse
-export const PermissionDropdownListResponseSchema = PermissionDropdownResponseList
+export const PermissionListResponseSchema = list
+export const PermissionResponseSchema = item
+export const PermissionDropdownListResponseSchema = items

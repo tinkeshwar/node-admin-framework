@@ -18,7 +18,7 @@ global.Promise = (BluebirdPromise as any)
 
 env.config()
 
-const { NODE_ENV, REDIS_URL } = process.env
+const { NODE_ENV, REDIS_URL, REDIS_PREFIX } = process.env
 
 const onQueueActive = (queueName: string, job: Queue.Job<any>) => {
   logger.info(`Started processing ${queueName} job #${job.id}`)
@@ -34,7 +34,7 @@ const onQueueCompleted = (queueName: string, job: Queue.Job<any>) => {
 
 const start = async () => {
   await connector.authenticate()
-  QueueManager.init(REDIS_URL as string, `admin_${NODE_ENV || 'development'}_bull`, true)
+  QueueManager.init(REDIS_URL as string, `${REDIS_PREFIX}_${NODE_ENV || 'development'}_bull`, true)
 
   for (const entry of QueueManager.getQueueEntries()) {
     const [queueName, queue]: [string, Queue.Queue] = entry
@@ -45,7 +45,7 @@ const start = async () => {
 
   EventManager.init({ isWorker: true })
 
-  const metricsNamespace = `admin_${NODE_ENV || 'development'}`
+  const metricsNamespace = `${REDIS_PREFIX}_${NODE_ENV || 'development'}`
   await MetricsCollectionService.init(metricsNamespace)
 
   logger.info('Worker is active now')
