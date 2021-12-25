@@ -2,8 +2,8 @@ import Joi from 'joi'
 import SchemaBuilder from './SchemaBuilder'
 
 const { item, items, list } = SchemaBuilder(Joi.object({
-  name: Joi.string().required().example('Developer'),
-  alias: Joi.string().required().example('developer'),
+  name: Joi.string().optional().example('Developer'),
+  alias: Joi.string().optional().example('developer'),
   description: Joi.string().optional(),
   status: Joi.boolean().default(false)
 }), {

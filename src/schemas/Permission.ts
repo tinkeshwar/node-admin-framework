@@ -2,8 +2,7 @@ import Joi from 'joi'
 import SchemaBuilder from './SchemaBuilder'
 
 const { item, items, list } = SchemaBuilder(Joi.object({
-  name: Joi.string().required().example('models.method'),
-  description: Joi.string().optional().allow(null),
+  name: Joi.string().optional().example('models.method'),
   level: Joi.string().optional().example('low'),
   status: Joi.boolean().default(false)
 }), {

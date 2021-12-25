@@ -26,10 +26,51 @@ describe('[USER API INTEGRATION] Permission API tests', () => {
     })
   })
 
+  it('Create permission should pass', async () => {
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/user/permissions',
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      },
+      payload: {
+        name: faker.random.word(),
+        level: 'low'
+      }
+    })
+    expect(res.statusCode).equal(200)
+  })
+
+  it('Update permission should pass', async () => {
+    const res = await server.inject({
+      method: 'PUT',
+      url: `/api/user/permissions/${id}`,
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      },
+      payload: {
+        name: faker.random.word(),
+        level: 'low'
+      }
+    })
+    expect(res.statusCode).equal(200)
+  })
+
   it('Returns a list of permissions should pass', async () => {
     const res = await server.inject({
       method: 'GET',
       url: '/api/user/permissions?page=1&records=10',
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      }
+    })
+    expect(res.statusCode).equal(200)
+  })
+
+  it('Returns a list of permissions for dropdown should pass', async () => {
+    const res = await server.inject({
+      method: 'GET',
+      url: '/api/user/permissions/dropdown?sort=created_at&order=ASC',
       headers: {
         authorization: `Bearer ${(global as any).adminToken}`
       }
@@ -51,6 +92,17 @@ describe('[USER API INTEGRATION] Permission API tests', () => {
   it('Mark as active permission should pass', async () => {
     const res = await server.inject({
       method: 'PATCH',
+      url: `/api/user/permissions/${id}`,
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      }
+    })
+    expect(res.statusCode).equal(200)
+  })
+
+  it('Delete permission should pass', async () => {
+    const res = await server.inject({
+      method: 'DELETE',
       url: `/api/user/permissions/${id}`,
       headers: {
         authorization: `Bearer ${(global as any).adminToken}`

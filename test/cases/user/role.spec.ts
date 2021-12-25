@@ -41,10 +41,53 @@ describe('[USER API INTEGRATION] Role API tests', () => {
     })
   })
 
+  it('Create role should pass', async () => {
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/user/roles',
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      },
+      payload: {
+        name: faker.random.word(),
+        alias: faker.random.word(),
+        description: faker.vehicle.vin()
+      }
+    })
+    expect(res.statusCode).equal(200)
+  })
+
+  it('Update role should pass', async () => {
+    const res = await server.inject({
+      method: 'PUT',
+      url: `/api/user/roles/${id}`,
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      },
+      payload: {
+        name: faker.vehicle.manufacturer(),
+        alias: faker.vehicle.type(),
+        description: faker.vehicle.vin()
+      }
+    })
+    expect(res.statusCode).equal(200)
+  })
+
   it('Returns a list of roles should pass', async () => {
     const res = await server.inject({
       method: 'GET',
       url: '/api/user/roles?page=1&records=10',
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      }
+    })
+    expect(res.statusCode).equal(200)
+  })
+
+  it('Returns a list of roles dropdown should pass', async () => {
+    const res = await server.inject({
+      method: 'GET',
+      url: '/api/user/roles/dropdown?sort=created_at&order=ASC',
       headers: {
         authorization: `Bearer ${(global as any).adminToken}`
       }
@@ -83,6 +126,17 @@ describe('[USER API INTEGRATION] Role API tests', () => {
       },
       payload: {
         permission: permissionId
+      }
+    })
+    expect(res.statusCode).equal(200)
+  })
+
+  it('Delete role should pass', async () => {
+    const res = await server.inject({
+      method: 'DELETE',
+      url: `/api/user/roles/${id}`,
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
       }
     })
     expect(res.statusCode).equal(200)

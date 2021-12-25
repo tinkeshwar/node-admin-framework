@@ -18,17 +18,6 @@ describe('[AUTH API INTEGRATION] Auth tests', () => {
     expect(resObj.refresh).to.be.a('string')
   })
 
-  it('Request user profile after login should pass', async () => {
-    const res = await server.inject({
-      method: 'GET',
-      url: '/api/auth/profile/profile',
-      headers: {
-        authorization: `Bearer ${(global as any).adminToken}`
-      }
-    })
-    expect(res.statusCode).equal(200)
-  })
-
   it('Request access token from refreh token should pass', async () => {
     const res = await server.inject({
       method: 'POST',
@@ -70,5 +59,59 @@ describe('[AUTH API INTEGRATION] Auth tests', () => {
     expect(res.statusCode).equal(403)
     expect(resObj.message).to.be.a('string')
     expect(resObj.message).equal('Password recovery record does not exist')
+  })
+
+  it('Sign out should pass', async () => {
+    const res = await server.inject({
+      method: 'GET',
+      url: '/api/auth/user/logout',
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      }
+    })
+    expect(res.statusCode).equal(409)
+  })
+
+  it('Request user profile after login should pass', async () => {
+    const res = await server.inject({
+      method: 'GET',
+      url: '/api/auth/profile/profile',
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      }
+    })
+    expect(res.statusCode).equal(200)
+  })
+
+  it('Request user password change should pass', async () => {
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/auth/profile/change-password',
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      },
+      payload: {
+        current_password: 'admin',
+        new_password: 'admin'
+      }
+    })
+    expect(res.statusCode).equal(200)
+  })
+
+  it('Request user profile change should pass', async () => {
+    const res = await server.inject({
+      method: 'POST',
+      url: '/api/auth/profile/change-profile',
+      headers: {
+        authorization: `Bearer ${(global as any).adminToken}`
+      },
+      payload: {
+        firstname: 'Tinkeshwar',
+        middlename: 'Singh',
+        lastname: 'Rajput',
+        phone: '9891140214'
+      }
+    })
+    expect(res.statusCode).equal(200)
   })
 })
