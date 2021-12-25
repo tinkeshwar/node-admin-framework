@@ -7,7 +7,6 @@ export interface AuthUserSettings {
 
 export interface AuthUser {
     user: User;
-    setting: AuthUserSettings[];
     token: string;
     refresh: string;
 }

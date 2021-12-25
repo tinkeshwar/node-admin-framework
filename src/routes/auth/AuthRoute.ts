@@ -18,7 +18,7 @@ export default [
       validate: {
         options: { abortEarly: false },
         payload: {
-          email: Joi.string().email().required().example('tinkeshwar@vidhyasaga.com'),
+          email: Joi.string().email().required().example('tinkeshwar@admin.com'),
           password: Joi.string().required().example('admin')
         }
       },

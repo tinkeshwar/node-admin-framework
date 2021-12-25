@@ -26,11 +26,9 @@ const SCOPE_CACHE_EXPIRES_IN_SECONDS = 600
 class AuthService {
   public static async authorize (user: User): Promise<AuthUser> {
     const scope = await PermissionService.getUserRoles(user.id)
-    const setting = await UserSettingManager.getUserSettings(user.id)
     const token = JWT.sign({
       user,
       scope: await AuthService.secureScope(user, scope),
-      setting: await AuthService.secureSettings(user, setting),
       tokenType: 'access'
     }, JWT_TOKEN as string, {
       algorithm: 'HS256',
@@ -45,7 +43,6 @@ class AuthService {
     })
     return {
       user,
-      setting,
       token,
       refresh
     }
