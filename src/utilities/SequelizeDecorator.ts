@@ -3,6 +3,8 @@ import 'reflect-metadata'
 import sequelize, { DataType, DataTypes, InitOptions, Model } from 'sequelize'
 
 import snakeCaseKeys from 'snakecase-keys'
+import toSnakeCase from 'to-snake-case'
+import EventManager from '../services/event/EventManager'
 
 interface IColumnOption {[key: string]: any; type?: never;}
 
@@ -67,6 +69,13 @@ export function AutoString (options: IColumnOption = {}) {
   )
 }
 
+export function Virtual (options: IColumnOption = {}) {
+  return Column(
+    DataTypes.VIRTUAL,
+    { allowNull: true, ...options }
+  )
+}
+
 export function Extend (options: IColumnOption = {}) {
   return (target: any, propertyKey: string) => {
     const attributes = Reflect.getMetadata(attributesMetadataField, target) || {}
@@ -114,4 +123,28 @@ export const Entity = (tableName: string, options: IEntityOptions) => (target: M
     tableName,
     ...initOptions
   })
+
+  if (options.eventPrefix && options.eventId) {
+    const eventPrefix = options.eventPrefix
+    const eventId = options.eventId
+
+    target.afterCreate(async (record: Model) => {
+      await EventManager.emit(`${eventPrefix}_CREATED`.toUpperCase(), {
+        [eventId]: (record as Record<string, any>)[options.eventModelId || 'id']
+      })
+    })
+
+    target.afterUpdate(async (record: Model) => {
+      await EventManager.emit(`${eventPrefix}_UPDATED`.toUpperCase(), {
+        [eventId]: (record as Record<string, any>)[options.eventModelId || 'id'],
+        changed: (record.changed() as string[]).map((key) => toSnakeCase(key))
+      })
+    })
+
+    target.afterDestroy(async (record: Model) => {
+      await EventManager.emit(`${eventPrefix}_DESTROYED`.toUpperCase(), {
+        [eventId]: (record as Record<string, any>)[options.eventModelId || 'id']
+      })
+    })
+  }
 }
