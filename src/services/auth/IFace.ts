@@ -14,7 +14,6 @@ export interface AuthUser {
 export interface AuthUserJWT {
     user: User;
     scope: string[];
-    setting: AuthUserSettings[];
     tokenType: string;
 }
 
@@ -22,8 +21,7 @@ export interface AuthUserJWTVerify {
     isValid: boolean,
     credentials?: {
         user: User,
-        scope: string[],
-        setting: AuthUserSettings[]
+        scope: string[]
     }
 }
 

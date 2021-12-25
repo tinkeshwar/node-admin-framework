@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { it, describe, before, after } from 'mocha'
+import { describe, it, before, after } from 'mocha'
 import { server } from '../../../src/config/server'
 import { Permission, Role, User } from '../../../src/models'
 import faker from 'faker'

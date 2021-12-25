@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { it, describe } from 'mocha'
+import { describe, it } from 'mocha'
 import { server } from '../../../src/config/server'
 
 describe('[AUTH API INTEGRATION] Auth tests', () => {

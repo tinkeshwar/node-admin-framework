@@ -4,8 +4,7 @@ import cryptoRandomString from 'crypto-random-string'
 import { User } from '../../models'
 import RedisCacheManager from '../cache/Redis'
 import PermissionService from './PermissionService'
-import UserSettingManager from '../setting/UserSettingService'
-import { AuthUser, AuthUserJWT, AuthUserJWTVerify, AuthUserSettings, ResetToken } from './IFace'
+import { AuthUser, AuthUserJWT, AuthUserJWTVerify, ResetToken } from './IFace'
 
 const { NODE_ENV, JWT_TOKEN } = process.env
 
@@ -75,9 +74,9 @@ class AuthService {
   }
 
   public static async verify (toVerify: AuthUserJWT): Promise<AuthUserJWTVerify> {
-    const { user, scope: scopeKey, setting: settingKey, tokenType } = toVerify
+    const { user, scope: scopeKey, tokenType } = toVerify
 
-    if (tokenType !== 'access' || (typeof scopeKey !== 'string') || (typeof settingKey !== 'string')) {
+    if (tokenType !== 'access' || (typeof scopeKey !== 'string')) {
       return { isValid: false }
     }
     let scope: string[] | null = await AuthService.getScope(user, scopeKey)
@@ -85,13 +84,7 @@ class AuthService {
       scope = await PermissionService.getUserRoles(user.id)
       await AuthService.secureScope(user, scope, scopeKey)
     }
-
-    let setting: AuthUserSettings[] | null = await AuthService.getSetting(user, settingKey)
-    if (!setting) {
-      setting = await UserSettingManager.getUserSettings(user.id)
-      await AuthService.secureSettings(user, setting, settingKey)
-    }
-    return { isValid: true, credentials: { user, scope, setting } }
+    return { isValid: true, credentials: { user, scope } }
   }
 
   public static async sendVerificationToken (user: User):Promise<ResetToken> {
@@ -113,35 +106,12 @@ class AuthService {
     return AuthService.deserializeScope(serializedScope)
   }
 
-  private static async secureSettings (user: User, settings: AuthUserSettings[], hashKey?: string): Promise<string> {
-    const settingKey = hashKey || cryptoRandomString({ length: 10, type: 'alphanumeric' })
-    const serializedScope = AuthService.serializeSetting(settings)
-    await scopeCache.set(`${user.id}:${settingKey}`, serializedScope, SCOPE_CACHE_EXPIRES_IN_SECONDS)
-    return settingKey
-  }
-
-  private static async getSetting (user: User, settingKey: string): Promise<AuthUserSettings[] | null> {
-    const serializedSetting = await scopeCache.get(`${user.id}:${settingKey}`)
-    if (!serializedSetting) {
-      return null
-    }
-    return AuthService.deserializeSetting(serializedSetting)
-  }
-
   private static serializeScope (scope: string[]): string {
     return zlib.brotliCompressSync(JSON.stringify(scope)).toString('base64')
   }
 
   private static deserializeScope (serializedScope: string): string[] {
     return JSON.parse(zlib.brotliDecompressSync(Buffer.from(serializedScope, 'base64')).toString('utf-8')) as string[]
-  }
-
-  private static serializeSetting (scope: AuthUserSettings[]): string {
-    return zlib.brotliCompressSync(JSON.stringify(scope)).toString('base64')
-  }
-
-  private static deserializeSetting (serializedScope: string): AuthUserSettings[] {
-    return JSON.parse(zlib.brotliDecompressSync(Buffer.from(serializedScope, 'base64')).toString('utf-8')) as AuthUserSettings[]
   }
 }
 

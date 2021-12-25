@@ -20,8 +20,7 @@ const {
   DB_USER,
   DB_PASSWORD,
   DB_NAME,
-  DB_HOST,
-  DB_TEST_NAME
+  DB_HOST
 } = process.env
 
 const commonConfig: IDBConfig = {
@@ -43,7 +42,7 @@ export const development = Object.assign({}, commonConfig, {
 }) as IDBConfig
 
 export const test = Object.assign({}, commonConfig, {
-  database: DB_TEST_NAME || 'test'
+  database: `${DB_NAME}_test` || 'test'
 }) as IDBConfig
 
 export const production = Object.assign({}, commonConfig, {
