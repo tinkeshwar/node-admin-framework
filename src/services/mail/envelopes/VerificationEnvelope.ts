@@ -1,6 +1,5 @@
 import path from 'path'
 import pug from 'pug'
-
 import IEnvelope from './IEnvelope'
 
 const {

@@ -1,8 +1,8 @@
 import Redis from 'ioredis'
 
-const { REDIS_URL } = process.env
+const { REDIS_URL, REDIS_PREFIX } = process.env
 
-const keyPrefix = 'saga_metrics'
+const keyPrefix = `${REDIS_PREFIX}_metrics`
 
 class LocalMetricsCollectionService {
   private static redis: Redis.Redis;

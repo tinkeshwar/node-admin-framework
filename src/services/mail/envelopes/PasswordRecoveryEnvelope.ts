@@ -13,7 +13,7 @@ class PasswordRecoveryEnvelope implements IEnvelope {
   public attachment?: any;
 
   public constructor (recoveryToken: string, verificationCode: string) {
-    this.subject = 'Vidhyasaga password recovery'
+    this.subject = 'Password recovery'
     const link = (FRONTEND_PASSWORD_RECOVERY_URL as string).replace('@@token', recoveryToken).replace('@@code', verificationCode)
     this.html = pug.renderFile(path.join(__dirname, 'PasswordRecoveryEnvelope.pug'), { link })
   }

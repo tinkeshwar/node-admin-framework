@@ -9,7 +9,7 @@ class PasswordChangeEnvelope implements IEnvelope {
   public attachment?: any;
 
   public constructor (name: string) {
-    this.subject = 'Vidhyasaga Password Change Alert'
+    this.subject = 'Password Change Alert'
     this.html = pug.renderFile(path.join(__dirname, 'PasswordChangeEnvelope.pug'), { name })
   }
 }

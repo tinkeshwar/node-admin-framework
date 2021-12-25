@@ -14,15 +14,15 @@ BluebirdPromise.config({
 
 env.config()
 
-const { NODE_ENV, REDIS_URL } = process.env
+const { NODE_ENV, REDIS_URL, REDIS_PREFIX } = process.env
 
 const start = async () => {
   try {
     logger.info('Connecting..')
     await dbconnector.authenticate()
-    QueueManager.init(REDIS_URL as string, `saga_${NODE_ENV || 'development'}_bull`, true)
+    QueueManager.init(REDIS_URL as string, `${REDIS_PREFIX}_${NODE_ENV || 'development'}_bull`, true)
     EventManager.init()
-    await MetricsCollectionService.init(`saga_${NODE_ENV || 'development'}`)
+    await MetricsCollectionService.init(`${REDIS_PREFIX}_${NODE_ENV || 'development'}`)
     await server.start()
     logger.info('Connected')
   } catch (error: any) {
