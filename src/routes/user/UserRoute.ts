@@ -1,5 +1,5 @@
 import Joi from 'joi'
-import { UserCreateUpdateResponseSchema, UserListResponseSchema, UserResponseSchema } from '../../schemas/User'
+import { UserListResponseSchema, UserResponseSchema } from '../../schemas/User'
 import UserController from '../../controllers/user/UserController'
 import { BadRequestErrorSchema, InternalServerErrorSchema, StatusChangeSchema, UnauthorizedErrorSchema } from '../../schemas/Common'
 
@@ -68,7 +68,7 @@ export default [
       },
       response: {
         status: {
-          200: UserCreateUpdateResponseSchema,
+          200: UserResponseSchema,
           400: BadRequestErrorSchema,
           401: UnauthorizedErrorSchema,
           500: InternalServerErrorSchema
@@ -135,7 +135,7 @@ export default [
       },
       response: {
         status: {
-          200: UserCreateUpdateResponseSchema,
+          200: UserResponseSchema,
           400: BadRequestErrorSchema,
           401: UnauthorizedErrorSchema,
           500: InternalServerErrorSchema
@@ -222,7 +222,7 @@ export default [
       },
       response: {
         status: {
-          200: UserCreateUpdateResponseSchema,
+          200: UserResponseSchema,
           400: BadRequestErrorSchema,
           401: UnauthorizedErrorSchema,
           500: InternalServerErrorSchema
@@ -253,7 +253,7 @@ export default [
       },
       response: {
         status: {
-          200: UserCreateUpdateResponseSchema,
+          200: UserResponseSchema,
           400: BadRequestErrorSchema,
           401: UnauthorizedErrorSchema,
           500: InternalServerErrorSchema
@@ -284,7 +284,7 @@ export default [
       },
       response: {
         status: {
-          200: UserCreateUpdateResponseSchema,
+          200: UserResponseSchema,
           400: BadRequestErrorSchema,
           401: UnauthorizedErrorSchema,
           500: InternalServerErrorSchema
@@ -315,7 +315,7 @@ export default [
       },
       response: {
         status: {
-          200: UserCreateUpdateResponseSchema,
+          200: UserResponseSchema,
           400: BadRequestErrorSchema,
           401: UnauthorizedErrorSchema,
           500: InternalServerErrorSchema

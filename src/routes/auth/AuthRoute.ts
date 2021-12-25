@@ -1,7 +1,8 @@
 import Joi from 'joi'
-import { AuthUserResponseSchema, PasswordRecoveryResponseSchema, PasswordResetResponseSchema } from '../../schemas/User'
 import LoginController from '../../controllers/auth/LoginController'
 import { UnauthorizedErrorSchema, InternalServerErrorSchema, BadRequestErrorSchema } from '../../schemas/Common'
+import { PasswordRecoveryResponseSchema, PasswordResetResponseSchema } from '../../schemas/PasswordRecovery'
+import { AuthenticationResponseSchema, UserResponseSchema } from '../../schemas/User'
 
 const controller = new LoginController()
 
@@ -23,7 +24,28 @@ export default [
       },
       response: {
         status: {
-          200: AuthUserResponseSchema,
+          200: AuthenticationResponseSchema,
+          400: BadRequestErrorSchema,
+          401: UnauthorizedErrorSchema,
+          500: InternalServerErrorSchema
+        }
+      }
+    }
+  },
+  {
+    path: '/api/auth/user/logout',
+    method: 'GET',
+    handler: controller.logout.bind(controller),
+    options: {
+      description: 'Logout User',
+      notes: 'Logout user out of system',
+      tags: ['api', 'Auth'],
+      validate: {
+        options: { abortEarly: false }
+      },
+      response: {
+        status: {
+          200: UserResponseSchema,
           400: BadRequestErrorSchema,
           401: UnauthorizedErrorSchema,
           500: InternalServerErrorSchema
@@ -97,7 +119,7 @@ export default [
       },
       response: {
         status: {
-          200: AuthUserResponseSchema,
+          200: AuthenticationResponseSchema,
           400: BadRequestErrorSchema,
           401: UnauthorizedErrorSchema,
           500: InternalServerErrorSchema

@@ -14,7 +14,7 @@ class OSFileConnector implements IFileSystemConnector {
 
   public constructor (fsPath = './static') {
     this.basepath = path.resolve(fsPath)
-    this.publicUrl = urljoin(process.env.SERVER_HOST_URL as string, this.normalizePath(fsPath))
+    this.publicUrl = urljoin(`http://${process.env.SERVER_HOST}:${process.env.SERVER_PORT}` as string, this.normalizePath(fsPath))
   }
 
   public async fileExists (filepath: string): Promise<boolean> {

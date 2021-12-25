@@ -43,6 +43,22 @@ class SignInService {
 
     return AuthService.authorize(user)
   }
+
+  public static async logout (token: string): Promise<User> {
+    let decoded
+    try {
+      decoded = AuthService.decoded(token)
+    } catch (error: any) {
+      const err: Error = error
+      throw new InvalidJWTError(err.message)
+    }
+    const { user: { id: userId } } = decoded
+    const user = await User.findByPk(userId)
+    if (!user) {
+      throw new UserNotExistError('User not found')
+    }
+    return user
+  }
 }
 
 export default SignInService

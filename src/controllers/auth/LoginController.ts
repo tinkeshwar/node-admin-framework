@@ -66,5 +66,24 @@ class LoginController {
       return Boom.forbidden(error)
     }
   }
+
+  async logout (request: Hapi.Request, response: Hapi.ResponseToolkit): Promise<Error | Hapi.ResponseObject> {
+    try {
+      const { authorization } = request.headers as any
+      const user = await SignInService.logout(authorization)
+      return response.response(user.toJSON())
+    } catch (error: any) {
+      const err: Error = error
+      switch (err.constructor) {
+        case InvalidJWTError:
+          return Boom.conflict('User Already Logged Out.')
+        case UserNotExistError:
+          return Boom.notFound('User Not Found.')
+        case InvalidTokenTypeError:
+          return Boom.unauthorized('You have no access.')
+      }
+      throw err
+    }
+  }
 }
 export default LoginController

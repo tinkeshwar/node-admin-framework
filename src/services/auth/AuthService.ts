@@ -51,6 +51,19 @@ class AuthService {
     }
   }
 
+  public static decoded (token: string): AuthUserJWT {
+    const payload = JWT.verify(token, JWT_TOKEN as string)
+    if (typeof payload !== 'object') {
+      throw new Error('JWT payload is not an object')
+    }
+
+    const objectPayload: AuthUserJWT = payload as any
+    if (!objectPayload.tokenType) {
+      throw new Error('Malformed JWT payload')
+    }
+    return objectPayload
+  }
+
   public static refresh (token: string): AuthUserJWT {
     const payload = JWT.verify(token, JWT_TOKEN as string)
     if (typeof payload !== 'object') {

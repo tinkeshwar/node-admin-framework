@@ -1,7 +1,7 @@
-import { AuthUserProfileResponseSchema, UserResponseSchema } from '../../schemas/User'
 import { UnauthorizedErrorSchema, InternalServerErrorSchema, BadRequestErrorSchema } from '../../schemas/Common'
 import ProfileController from '../../controllers/auth/ProfileController'
 import Joi from 'joi'
+import { UserProfileResponseSchema, UserResponseSchema } from '../../schemas/User'
 
 const controller = new ProfileController()
 
@@ -22,7 +22,7 @@ export default [
       },
       response: {
         status: {
-          200: AuthUserProfileResponseSchema,
+          200: UserProfileResponseSchema,
           400: BadRequestErrorSchema,
           401: UnauthorizedErrorSchema,
           500: InternalServerErrorSchema
