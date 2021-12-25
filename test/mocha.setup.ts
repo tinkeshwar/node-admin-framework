@@ -6,6 +6,7 @@ import QueueManager from '../src/services/queue/QueueManager'
 import RedisCacheManager from '../src/services/cache/Redis'
 import { access } from './utils/helper'
 import logger from '../src/config/logger'
+import sample from './data.json'
 
 global.Promise = require('bluebird');
 
@@ -16,7 +17,6 @@ global.Promise = require('bluebird');
 require('dotenv').config()
 
 const {
-  REDIS_TEST_URL,
   REDIS_URL
 } = process.env as Record<string, string>
 
@@ -29,17 +29,17 @@ function handleDiagnostics () {
 
 export async function mochaGlobalSetup () {
   await sequelize.authenticate()
-  QueueManager.init(REDIS_TEST_URL || REDIS_URL, 'admin_test_bull')
+  QueueManager.init(sample.redis.redis_url || REDIS_URL, sample.redis.redis_key)
   EventBus.init()
-  const metricsNamespace = 'admin_test'
+  const metricsNamespace = sample.metrics.name
   await MetricsCollectionService.init(metricsNamespace)
   await server.init()
   const auth = await access();
   (global as any).adminToken = auth.token;
   (global as any).refreshToken = auth.refresh;
   (global as any).superadmin = {
-    email: 'tinkeshwar@admin.com',
-    password: 'admin'
+    email: sample.credential.username,
+    password: sample.credential.password
   }
 }
 

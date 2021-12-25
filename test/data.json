@@ -1,0 +1,13 @@
+{
+    "credential":{
+        "username":"tinkeshwar@admin.com",
+        "password":"admin"
+    },
+    "redis":{
+        "redis_url":"redis://localhost:6379",
+        "redis_key":"test_redis"
+    },
+    "metrics":{
+        "name":"test_metrics"
+    }
+}

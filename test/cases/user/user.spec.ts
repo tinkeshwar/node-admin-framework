@@ -1,11 +1,12 @@
 import { expect } from 'chai'
+import { it, describe, before, after } from 'mocha'
 import { server } from '../../../src/config/server'
 import { Permission, Role, User } from '../../../src/models'
 import faker from 'faker'
 
 describe('[USER API INTEGRATION] User API tests', () => {
-  const id = faker.datatype.number({min: 10, max: 100})
-  const permissionId = faker.datatype.number({min: 500, max: 999})
+  const id = faker.datatype.number({ min: 10, max: 100 })
+  const permissionId = faker.datatype.number({ min: 500, max: 999 })
   const userTestData = {
     firstname: faker.name.firstName(),
     middlename: null,
@@ -25,7 +26,7 @@ describe('[USER API INTEGRATION] User API tests', () => {
     name: faker.vehicle.model(),
     level: 'low'
   }
-  
+
   before(async () => {
     await User.create({
       id: id,

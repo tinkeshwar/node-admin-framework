@@ -1,4 +1,5 @@
 import { expect } from 'chai'
+import { it } from 'mocha'
 import { server } from '../../src/config/server'
 
 // eslint-disable-next-line no-undef

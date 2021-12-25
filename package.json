@@ -13,7 +13,7 @@
     "lint:stats": "./node_modules/.bin/eslint --format ./node_modules/eslint-stats/byError.js --ext .ts src",
     "lint:fix": "./node_modules/.bin/eslint --fix --ext .ts src",
     "build": "./node_modules/.bin/tsc && copyfiles -u 1 \"src/**/*.pug\" dist/",
-    "dev:start": "npm-run-all build start",
+    "dev:start": "NODE_ENV=development npm-run-all build start",
     "dev": "cross-env NODE_ENV=development ts-node-dev --respawn --transpile-only src/index.ts",
     "start": "node .",
     "worker": "node dist/config/worker.js",
